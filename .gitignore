@@ -1,0 +1,84 @@
+# ===============================
+# Éditeurs / IDE
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.iml
+
+# ===============================
+# BACKEND (FastAPI / Python / uv)
+# ===============================
+
+# Environnement virtuel (utilisé par uv)
+/backend/env/
+
+# Caches Python (bytecode)
+/backend/__pycache__/
+/backend/*.py[cod]
+/backend/*$py.class
+
+# Tests et couverture
+/backend/.pytest_cache/
+/backend/.coverage
+/backend/htmlcov/
+/backend/.tox/
+/backend/.nox/
+
+# Linters / Type checkers (ruff, mypy, etc.)
+/backend/.mypy_cache/
+/backend/.ruff_cache/
+/backend/.pytype/
+
+# Dossiers de build / distribution
+/backend/dist/
+/backend/build/
+/backend/*.egg-info/
+/backend/*.egg
+/backend/parts/
+/backend/sdist/
+/backend/var/
+/backend/wheels/
+
+# Fichiers d'environnement locaux (variables sensibles)
+/backend/.env
+/backend/.env.*
+!/backend/.env.example
+
+# Bases de données et logs locaux
+/backend/*.log
+/backend/*.db
+/backend/*.sqlite3
+
+# ===============================
+# FRONTEND (Angular)
+# ===============================
+
+# Node modules
+/frontend/node_modules/
+/frontend/.npm/
+
+# Sorties de compilation Angular
+/frontend/dist/
+/frontend/tmp/
+/frontend/out-tsc/
+/frontend/.angular/
+
+# Fichiers de log
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/lerna-debug.log*
+
+# Variables d'environnement locales
+/frontend/.env
+/frontend/.env.*
+!/frontend/.env.example
+
+# Fichiers temporaires divers
+/frontend/.browserslistrc
