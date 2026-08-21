@@ -1,4 +1,7 @@
-<a [routerLink]="myLink().path" class="flex">
-    <i [class]="myLink().icon"></i>
-    <span>{{ myLink().title }}</span>
+<a 
+    [routerLink]="myLink().path" 
+    class="text-blue-900 mx-3 flex items-center gap-3 mb-3"
+    [routerLinkActive]="'bg-blue-50'">
+    <fa-icon class="text-xl" [icon]="myLink().icon"/>
+    <span class="text-md">{{ myLink().title }}</span>
 </a>

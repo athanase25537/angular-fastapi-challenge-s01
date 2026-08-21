@@ -1,11 +1,13 @@
-import { Component, input } from '@angular/core';
-import { LinkModel } from '../linkModel';
-import { RouterLink } from "@angular/router";
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { LinkModel } from '../link-model';
+import { RouterLink, RouterLinkActive } from "@angular/router";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-link-component',
-  imports: [RouterLink],
+  imports: [FontAwesomeModule, RouterLink, RouterLinkActive],
   templateUrl: './link-component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './link-component.css',
 })
 export class LinkComponent {

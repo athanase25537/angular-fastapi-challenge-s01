@@ -1,1 +1,5 @@
-<app-link-component [myLink]="link"/>
+<div class="h-[100vh] w-[250px] border-left border-1 border-zinc-200 py-5">
+    @for(myLink of myLinks; track $index) {
+        <app-link-component [myLink]="myLink"/>
+    }
+</div>
