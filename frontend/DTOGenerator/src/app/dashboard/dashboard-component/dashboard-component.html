@@ -1,1 +1,6 @@
-<p>dashboard-component works!</p>
+<section class="p-4">
+	<h2 class="text-xl font-bold mb-3">Tableau de bord</h2>
+	<nav class="flex flex-col gap-1">
+		<app-link-component *ngFor="let l of links" [myLink]="l"></app-link-component>
+	</nav>
+</section>

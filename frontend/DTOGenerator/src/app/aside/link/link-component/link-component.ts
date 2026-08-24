@@ -1,15 +1,16 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
-import { LinkModel } from '../link-model';
-import { RouterLink, RouterLinkActive } from "@angular/router";
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { LinkModel } from '../link-model';
 
 @Component({
   selector: 'app-link-component',
-  imports: [FontAwesomeModule, RouterLink, RouterLinkActive],
+  standalone: true,
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './link-component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  styleUrl: './link-component.css',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class LinkComponent {
-  myLink = input.required<LinkModel>();
+  @Input() myLink!: LinkModel;
 }

@@ -1,7 +1,7 @@
-<a 
-    [routerLink]="myLink().path" 
+<a
+    [routerLink]="myLink.path"
     class="py-2 px-3 flex items-center gap-3"
-    [routerLinkActive]="'text-blue-900 bg-blue-100'">
-    <fa-icon class="text-xl" [icon]="myLink().icon"/>
-    <span class="text-md">{{ myLink().title }}</span>
+    routerLinkActive="text-blue-900 bg-blue-100">
+    <fa-icon class="text-xl" [icon]="myLink.icon"></fa-icon>
+    <span class="text-md">{{ myLink.title }}</span>
 </a>
