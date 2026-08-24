@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from core.database import db_dependency, initdb
 from sqlalchemy import text
 from models.database_models import *
-
+from api.routers import router
 
 app = FastAPI()
 
@@ -26,3 +26,4 @@ async def health_check_db(db: db_dependency):
     except Exception as e:
         return { "error": f"Error: {str(e)}"}
     
+app.include_router(router=router, tags=["API ENDPOINTS"])

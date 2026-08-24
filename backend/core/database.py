@@ -12,7 +12,6 @@ from sqlmodel import SQLModel
 load_dotenv()
 
 DATABASE_URL = getenv("DATABASE_URL", "")
-print(DATABASE_URL)
 
 engine = create_engine(url=DATABASE_URL)
 
