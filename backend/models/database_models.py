@@ -5,7 +5,7 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional
 from uuid import UUID, uuid4
-
+from datetime import datetime
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -15,12 +15,12 @@ from sqlmodel import Field, Relationship, SQLModel
 
 class TimestampMixin(SQLModel):
     created_at: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=datetime.now(datetime.timezone.utc),
         nullable=False
     )
 
     updated_at: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=datetime.now(datetime.timezone.utc),
         nullable=False
     )
 
