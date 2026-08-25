@@ -33,6 +33,14 @@ def generate(data: dict):
             
             for key, value in properties.items():
                 if"type" in value:
+                    if value["type"] == "integer": value["type"] = "number"
+                    if value["type"] == "array": 
+                        if "items" in value:
+                            
+                            if "type" in value["items"]:
+                                if value["items"]["type"] == "integer": value["type"] = "number[]"
+                                elif value["items"]["type"] == "string": value["type"] = "string[]"
+                                
                     d = { key: value["type"] } if key in required else { key: value["type"] + " | null" }
                     data_to_write.update(d)
 
