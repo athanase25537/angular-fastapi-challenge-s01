@@ -21,6 +21,8 @@ def write_typescript(path: Path, content: str) -> None:
     
         
 def generate(data: dict):
+    
+    print("Generating TypeScript interfaces...")
      
     for interface_name, interface_value in data.items():
         if "properties" in interface_value and "required" in interface_value:
@@ -38,6 +40,10 @@ def generate(data: dict):
                 Path(f"generated/interfaces/{make_interface_file_nameinterface_name(interface_name)}.ts"),
                 "export interface " + interface_name + " {\n" + "\n".join(f"  {name}: {type};" for name, type in data_to_write.items()) + "\n}"
             )
+            
+            print(f"Generated TypeScript interface for {interface_name} at generated/interfaces/{make_interface_file_nameinterface_name(interface_name)}.ts")
+            
+    print("TypeScript interfaces generated successfully.")
 
 
 
