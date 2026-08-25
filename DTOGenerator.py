@@ -35,7 +35,7 @@ def generate(data: dict):
                     data_to_write.update(d)
 
             write_typescript(
-                Path(f"{make_interface_file_nameinterface_name(interface_name)}.ts"),
+                Path(f"generated/interfaces/{make_interface_file_nameinterface_name(interface_name)}.ts"),
                 "export interface " + interface_name + " {\n" + "\n".join(f"  {name}: {type};" for name, type in data_to_write.items()) + "\n}"
             )
 
