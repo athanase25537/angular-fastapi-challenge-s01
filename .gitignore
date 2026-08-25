@@ -82,3 +82,5 @@
 
 # Fichiers temporaires divers
 /frontend/.browserslistrc
+
+openapi.json
