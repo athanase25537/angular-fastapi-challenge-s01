@@ -1,0 +1,7 @@
+<section class="page">
+  <div class="page-heading"><div><p class="eyebrow">ACCOUNT ACTIVITY</p><h1>Transactions</h1></div><button (click)="load()" [disabled]="loading()">Refresh</button></div>
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+  @if (loading()) { <p class="state">Loading transactions…</p> }
+  @else if (transactions().length === 0) { <div class="empty"><h2>No transactions yet</h2><p>Activity from your bank accounts will appear here.</p></div> }
+  @else { <div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>@for (transaction of transactions(); track transaction.id) { <tr><td>{{ transaction.reference }}</td><td>{{ transaction.transaction_type }}</td><td>{{ transaction.initiated_at | date:'mediumDate' }}</td><td>{{ transaction.amount | number:'1.2-2' }} {{ transaction.currency_code }}</td><td><span class="status">{{ transaction.status }}</span></td></tr> }</tbody></table></div> }
+</section>

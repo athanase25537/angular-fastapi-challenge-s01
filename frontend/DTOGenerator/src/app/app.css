@@ -1,0 +1,2 @@
+.app-shell { min-height: 100vh; display: flex; background: #f8fafc; color: #172033; }
+.page-content { flex: 1; min-width: 0; }

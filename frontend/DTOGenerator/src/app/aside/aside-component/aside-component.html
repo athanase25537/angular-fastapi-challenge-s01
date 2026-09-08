@@ -1,5 +1,7 @@
-<div class="h-[100vh] w-[250px] border-left border-1 border-zinc-200 py-5">
+<aside class="sticky top-0 h-screen w-64 border-r border-slate-200 bg-white py-5 flex flex-col">
+    <div class="px-5 pb-6 text-xl font-bold text-blue-700">S01 Bank</div>
     @for(myLink of myLinks; track $index) {
         <app-link-component [myLink]="myLink"/>
     }
-</div>
+    <button (click)="logout()" class="mt-auto mx-3 rounded-lg px-3 py-2 text-left text-slate-600 hover:bg-slate-100">Sign out</button>
+</aside>

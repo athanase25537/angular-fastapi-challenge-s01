@@ -1,0 +1,4 @@
+<section class="profile"><div class="heading"><div><p>ACCOUNT PROFILE</p><h1>Your personal details</h1></div><button (click)="refresh()" [disabled]="loading()">{{ loading() ? 'Refreshing…' : 'Refresh' }}</button></div>
+@if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+@if (auth.user(); as user) { <dl><div><dt>Full name</dt><dd>{{ user.first_name }} {{ user.last_name }}</dd></div><div><dt>Email</dt><dd>{{ user.email }}</dd></div><div><dt>Phone number</dt><dd>{{ user.phone_number }}</dd></div><div><dt>Date of birth</dt><dd>{{ user.date_of_birth ? (user.date_of_birth | date) : 'Not provided' }}</dd></div><div><dt>Account status</dt><dd class="status">{{ user.status }}</dd></div><div><dt>Member since</dt><dd>{{ user.created_at | date:'mediumDate' }}</dd></div></dl> }
+</section>

@@ -1,2 +1,8 @@
-<app-aside-component/>
-<router-outlet/>
+<div class="app-shell">
+  @if (auth.isAuthenticated()) {
+    <app-aside-component />
+  }
+  <main class="page-content">
+    <router-outlet />
+  </main>
+</div>

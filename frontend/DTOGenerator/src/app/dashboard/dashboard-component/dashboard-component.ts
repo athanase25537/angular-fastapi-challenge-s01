@@ -1,20 +1,14 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { LinkComponent } from '../../aside/link/link-component/link-component';
-import { LinkModel } from '../../aside/link/link-model';
-import { faHome, faList, faCog } from '@fortawesome/free-solid-svg-icons';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-dashboard-component',
   standalone: true,
-  imports: [CommonModule, LinkComponent],
+  imports: [RouterLink],
   templateUrl: './dashboard-component.html',
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class DashboardComponent {
-  links: LinkModel[] = [
-    new LinkModel(faHome, 'Accueil', '/'),
-    new LinkModel(faList, 'Mes items', '/items'),
-    new LinkModel(faCog, 'Paramètres', '/settings'),
-  ];
+  readonly auth = inject(AuthService);
 }
