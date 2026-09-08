@@ -1,5 +1,6 @@
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from core.database import db_dependency, initdb
 from core.utils import export_openapi_to_json
 from sqlalchemy import text
@@ -9,12 +10,21 @@ from pathlib import Path
 
 app = FastAPI(title="FastAPI Backend", description="Backend API for the application", version="1.0.0")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200", "http://127.0.0.1:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.on_event("startup")
 def on_startup():
     initdb()
     
-    output_file = Path("../openapi.json")
+    # Resolve from this source file, not from the process working directory.
+    output_file = Path(__file__).resolve().parents[1] / "openapi.json"
     export_openapi_to_json(app, output_file=output_file)
 
 

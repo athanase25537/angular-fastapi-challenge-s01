@@ -2,24 +2,29 @@ from models.database_models import User, UserStatus
 from api.user.user_schema import UserCreate, UserUpdate, UserRead
 from sqlmodel import Session, select
 from uuid import UUID
-from passlib.context import CryptContext
+import bcrypt
 from datetime import datetime
-
-# Configuration du contexte de hachage de mot de passe
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
 class UserService:
 
     @staticmethod
     def hash_password(password: str) -> str:
         """Hacher un mot de passe"""
-        return pwd_context.hash(password)
+        return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
     @staticmethod
     def verify_password(plain_password: str, hashed_password: str) -> bool:
         """Vérifier un mot de passe"""
-        return pwd_context.verify(plain_password, hashed_password)
+        return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
+
+    @staticmethod
+    def authenticate(email: str, password: str, session: Session) -> UserRead | None:
+        user = session.exec(select(User).where(User.email == email)).first()
+        if user is None or not UserService.verify_password(password, user.password_hash):
+            return None
+        if user.status in (UserStatus.BLOCKED, UserStatus.INACTIVE):
+            return None
+        return UserRead.model_validate(user)
 
     @staticmethod
     def create_user(user: UserCreate, session: Session) -> UserRead:
@@ -56,7 +61,7 @@ class UserService:
             session.commit()
             session.refresh(new_user)
             
-            return UserRead.from_orm(new_user)
+            return UserRead.model_validate(new_user)
         except Exception as e:
             session.rollback()
             raise e
@@ -71,7 +76,7 @@ class UserService:
         if not user:
             raise ValueError(f"Utilisateur avec l'ID {user_id} non trouvé")
         
-        return UserRead.from_orm(user)
+        return UserRead.model_validate(user)
 
     @staticmethod
     def get_user_by_email(email: str, session: Session) -> UserRead:
@@ -83,7 +88,7 @@ class UserService:
         if not user:
             raise ValueError(f"Utilisateur avec l'email {email} non trouvé")
         
-        return UserRead.from_orm(user)
+        return UserRead.model_validate(user)
 
     @staticmethod
     def get_all_users(session: Session, skip: int = 0, limit: int = 100) -> tuple[list[UserRead], int]:
@@ -94,7 +99,7 @@ class UserService:
         
         total = session.exec(select(User)).all().__len__()
         
-        return [UserRead.from_orm(user) for user in users], total
+        return [UserRead.model_validate(user) for user in users], total
 
     @staticmethod
     def update_user(user_id: UUID, user_update: UserUpdate, session: Session) -> UserRead:
@@ -137,7 +142,7 @@ class UserService:
             session.commit()
             session.refresh(user)
             
-            return UserRead.from_orm(user)
+            return UserRead.model_validate(user)
         except Exception as e:
             session.rollback()
             raise e

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query, Path
+from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from api.transaction.transaction_services import TransactionService
 from api.transaction.transaction_models import (
     TransactionCreate,
@@ -11,8 +11,11 @@ from models.database_models import TransactionStatus, TransactionType
 from starlette import status
 from core.database import db_dependency
 from uuid import UUID
+from api.auth.auth_dependencies import get_current_user
 
-router = APIRouter()
+# All transaction operations require a valid Bearer JWT. Account-level ownership
+# checks belong in the forthcoming account feature.
+router = APIRouter(dependencies=[Depends(get_current_user)])
 
 
 @router.post("/create", status_code=status.HTTP_201_CREATED, response_model=TransactionResponse)
@@ -194,3 +197,8 @@ def delete_transaction(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+# Literal segments must be checked before /{transaction_id}; otherwise FastAPI
+# attempts to parse "reference" and "account" as UUIDs and returns 422.
+router.routes.sort(key=lambda route: route.path == "/{transaction_id}")

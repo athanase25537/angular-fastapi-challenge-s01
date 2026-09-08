@@ -37,7 +37,7 @@ class TransactionService:
             session.commit()
             session.refresh(new_transaction)
 
-            return TransactionRead.from_orm(new_transaction)
+            return TransactionRead.model_validate(new_transaction)
         except Exception as e:
             session.rollback()
             raise e
@@ -52,7 +52,7 @@ class TransactionService:
         if not transaction:
             raise ValueError(f"Transaction avec l'ID {transaction_id} non trouvée")
 
-        return TransactionRead.from_orm(transaction)
+        return TransactionRead.model_validate(transaction)
 
     @staticmethod
     def get_transaction_by_reference(reference: str, session: Session) -> TransactionRead:
@@ -64,7 +64,7 @@ class TransactionService:
         if not transaction:
             raise ValueError(f"Transaction avec la référence {reference} non trouvée")
 
-        return TransactionRead.from_orm(transaction)
+        return TransactionRead.model_validate(transaction)
 
     @staticmethod
     def get_all_transactions(
@@ -87,7 +87,7 @@ class TransactionService:
 
         total = session.exec(query).all().__len__()
 
-        return [TransactionRead.from_orm(t) for t in transactions], total
+        return [TransactionRead.model_validate(t) for t in transactions], total
 
     @staticmethod
     def get_account_transactions(
@@ -105,7 +105,7 @@ class TransactionService:
         transactions = session.exec(query.offset(skip).limit(limit)).all()
         total = session.exec(query).all().__len__()
 
-        return [TransactionRead.from_orm(t) for t in transactions], total
+        return [TransactionRead.model_validate(t) for t in transactions], total
 
     @staticmethod
     def update_transaction(
@@ -135,7 +135,7 @@ class TransactionService:
             session.commit()
             session.refresh(transaction)
 
-            return TransactionRead.from_orm(transaction)
+            return TransactionRead.model_validate(transaction)
         except Exception as e:
             session.rollback()
             raise e
@@ -159,7 +159,7 @@ class TransactionService:
             session.commit()
             session.refresh(transaction)
 
-            return TransactionRead.from_orm(transaction)
+            return TransactionRead.model_validate(transaction)
         except Exception as e:
             session.rollback()
             raise e
@@ -185,7 +185,7 @@ class TransactionService:
             session.commit()
             session.refresh(transaction)
 
-            return TransactionRead.from_orm(transaction)
+            return TransactionRead.model_validate(transaction)
         except Exception as e:
             session.rollback()
             raise e

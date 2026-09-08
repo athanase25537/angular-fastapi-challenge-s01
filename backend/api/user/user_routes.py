@@ -4,6 +4,7 @@ from api.user.user_schema import UserCreate, UserUpdate, UserRead, UserResponse,
 from starlette import status
 from core.database import db_dependency
 from uuid import UUID
+from api.auth.auth_dependencies import current_user_dependency
 
 router = APIRouter()
 
@@ -26,12 +27,15 @@ def create_user(user: UserCreate, session: db_dependency):
 @router.get("/list", response_model=UserListResponse)
 def get_all_users(
     session: db_dependency,
+    current_user: current_user_dependency,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000)
 ):
     """Récupérer tous les utilisateurs avec pagination"""
     try:
-        users, total = UserService.get_all_users(session=session, skip=skip, limit=limit)
+        # There is no administration role flow yet; do not expose every user's
+        # personal data to a normal authenticated customer.
+        users, total = [UserRead.model_validate(current_user)], 1
         return {
             "message": "Utilisateurs récupérés avec succès",
             "data": users,
@@ -43,16 +47,21 @@ def get_all_users(
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(
+    session: db_dependency,
+    current_user: current_user_dependency,
     user_id: UUID = Path(..., description="ID de l'utilisateur"),
-    session: db_dependency = None
 ):
     """Récupérer un utilisateur par ID"""
     try:
+        if current_user.id != user_id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
         user = UserService.get_user(user_id=user_id, session=session)
         return {
             "message": "Utilisateur récupéré avec succès",
             "data": user
         }
+    except HTTPException:
+        raise
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
@@ -61,17 +70,22 @@ def get_user(
 
 @router.put("/{user_id}", response_model=UserResponse)
 def update_user(
+    session: db_dependency,
+    current_user: current_user_dependency,
     user_id: UUID = Path(..., description="ID de l'utilisateur"),
     user_update: UserUpdate = None,
-    session: db_dependency = None
 ):
     """Mettre à jour un utilisateur"""
     try:
+        if current_user.id != user_id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
         updated_user = UserService.update_user(user_id=user_id, user_update=user_update, session=session)
         return {
             "message": "Utilisateur mis à jour avec succès",
             "data": updated_user
         }
+    except HTTPException:
+        raise
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
@@ -80,13 +94,18 @@ def update_user(
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(
+    session: db_dependency,
+    current_user: current_user_dependency,
     user_id: UUID = Path(..., description="ID de l'utilisateur"),
-    session: db_dependency = None
 ):
     """Supprimer un utilisateur"""
     try:
+        if current_user.id != user_id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
         UserService.delete_user(user_id=user_id, session=session)
         return None
+    except HTTPException:
+        raise
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
