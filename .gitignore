@@ -19,6 +19,9 @@
 /backend/env/
 
 # Caches Python (bytecode)
+# Applies to the generator at the repository root and nested backend modules.
+__pycache__/
+*.py[cod]
 /backend/__pycache__/
 /backend/*.py[cod]
 /backend/*$py.class
