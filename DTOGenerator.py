@@ -88,10 +88,12 @@ def generate(openapi: dict[str, Any], output_dir: Path) -> None:
     names = [name for name in schemas if name not in SKIPPED_SCHEMAS]
     for name in names:
         (output_dir / f"{kebab_case(name)}.ts").write_text(render_schema(name, schemas[name]), encoding="utf-8")
-    (output_dir / "index.ts").write_text(
-        "\n".join(f"export type {{ {name} }} from './{kebab_case(name)}';" for name in names) + "\n",
-        encoding="utf-8",
-    )
+        (output_dir / "index.ts").write_text(
+            "\n".join(f"export type {{ {name} }} from './{kebab_case(name)}';" for name in names) + "\n",
+            encoding="utf-8",
+        )
+        
+        print(f"Generated TypeScript DTO for {name} in {output_dir / f'{kebab_case(name)}.ts'}")
     print(f"Generated {len(names)} TypeScript DTOs in {output_dir}")
 
 
