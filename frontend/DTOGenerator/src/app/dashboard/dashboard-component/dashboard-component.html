@@ -1,13 +1,43 @@
-<section class="p-6 md:p-10 max-w-6xl">
-  <p class="text-sm font-bold tracking-widest text-blue-600">OVERVIEW</p>
-  <h1 class="mt-2 text-3xl font-bold text-slate-900">Hello, {{ auth.user()?.first_name }}.</h1>
-  <p class="mt-2 text-slate-600">Your S01 banking workspace is ready.</p>
-  <div class="mt-8 grid gap-4 sm:grid-cols-2">
-    <a routerLink="/transactions" class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:border-blue-300">
-      <h2 class="font-bold text-slate-900">Transactions</h2><p class="mt-2 text-sm text-slate-600">Review your recent account activity.</p>
-    </a>
-    <a routerLink="/profile" class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:border-blue-300">
-      <h2 class="font-bold text-slate-900">Profile</h2><p class="mt-2 text-sm text-slate-600">View the personal information on your account.</p>
-    </a>
+<section class="dashboard">
+  <header class="welcome-row">
+    <div>
+      <p class="eyebrow">YOUR FINANCIAL OVERVIEW</p>
+      <h1>Good to see you, {{ auth.user()?.first_name }}.</h1>
+      <p class="lede">Everything in one clear view, so your next decision feels effortless.</p>
+    </div>
+    <button class="secondary-button" (click)="refresh()" [disabled]="loading()">{{ loading() ? 'Updating…' : 'Refresh data' }}</button>
+  </header>
+
+  <div class="summary-grid">
+    <article class="balance-card">
+      <div class="card-top"><span>Transaction volume</span><span class="trend">All activity</span></div>
+      <strong>{{ totalVolume() | currency:'USD':'symbol':'1.2-2' }}</strong>
+      <p>Across {{ totalTransactions() }} recorded transaction{{ totalTransactions() === 1 ? '' : 's' }}</p>
+      <a routerLink="/transactions">View transaction history <span>→</span></a>
+    </article>
+    <article class="metric-card">
+      <span class="metric-icon violet">↗</span><p>Transactions</p><strong>{{ totalTransactions() }}</strong><small>Available in your workspace</small>
+    </article>
+    <article class="metric-card">
+      <span class="metric-icon amber">◷</span><p>Awaiting action</p><strong>{{ pendingTransactions() }}</strong><small>Pending transaction{{ pendingTransactions() === 1 ? '' : 's' }}</small>
+    </article>
+  </div>
+
+  <div class="content-grid">
+    <section class="panel activity-panel">
+      <div class="panel-heading"><div><h2>Recent activity</h2><p>Your latest transaction updates.</p></div><a routerLink="/transactions">See all</a></div>
+      @if (loading()) { <div class="empty-state">Loading your activity…</div> }
+      @else if (recentTransactions().length === 0) { <div class="empty-state"><strong>No activity yet</strong><span>Create a transaction to start building your history.</span><a routerLink="/transactions">Create transaction</a></div> }
+      @else { <div class="activity-list">@for (item of recentTransactions(); track item.id) {
+        <div class="activity-item"><span class="activity-icon">{{ item.transaction_type === 'withdrawal' ? '↓' : '↑' }}</span><div><strong>{{ item.description || (item.transaction_type | titlecase) }}</strong><span>{{ item.initiated_at | date:'MMM d, y · h:mm a' }} · {{ item.reference }}</span></div><div class="activity-amount"><strong>{{ item.amount | currency:item.currency_code:'symbol':'1.2-2' }}</strong><span [class]="'status ' + item.status">{{ item.status }}</span></div></div>
+      }</div> }
+    </section>
+
+    <aside class="panel service-panel">
+      <div class="panel-heading"><div><h2>Workspace status</h2><p>Live service checks.</p></div></div>
+      <div class="health-row"><span class="health-dot" [class.offline]="!servicesOnline()"></span><div><strong>Application service</strong><span>{{ servicesOnline() ? 'Online and responding' : 'Unavailable' }}</span></div></div>
+      <div class="health-row"><span class="health-dot" [class.offline]="!databaseOnline()"></span><div><strong>Database connection</strong><span>{{ databaseOnline() ? 'Securely connected' : 'Unavailable' }}</span></div></div>
+      <div class="quick-action"><span>Need to update your details?</span><a routerLink="/profile">Manage profile →</a></div>
+    </aside>
   </div>
 </section>

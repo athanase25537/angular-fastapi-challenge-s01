@@ -46,7 +46,7 @@ export class AuthService {
     }
   }
 
-  private persistUser(user: UserRead): void {
+  persistUser(user: UserRead): void {
     this.user.set(user);
     if (isPlatformBrowser(this.platformId)) localStorage.setItem(USER_KEY, JSON.stringify(user));
   }
